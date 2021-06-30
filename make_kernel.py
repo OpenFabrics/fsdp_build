@@ -8,7 +8,7 @@ import shutil
 
 
 # Close up the container/clean up the container ID file
-def finish_building_kernel(out_dir, interrupt):
+#def finish_building_kernel(out_dir, interrupt):
     # write finish_container_cmd
     # Kill container; remove container ID file
 
@@ -16,7 +16,6 @@ def finish_building_kernel(out_dir, interrupt):
 # Builds the Linux kernel using the arguments provided
 # no arch; I believe we are always assuming x86-64
 def build_kernel(kconfig, src, out, make_args):
-    
     # create name for "out_subdir" and print:
     suffix = os.path.splitext(os.path.basename(kconfig))[0]
     out_subdir = out +  "/" + suffix
@@ -31,7 +30,7 @@ def build_kernel(kconfig, src, out, make_args):
     # Copy kconfig to output subdirectory as ".config"
     print('Copy kconfig to output subdirectory as ".config"')
     shutil.copyfile(kconfig, out_subdir + '/.config')
-    
+
     # Create build log (build_log.txt) and put it in out_subdir
     build_log = out_subdir + '/build_log.txt'
     print('Saving build log to "build_log.txt" in output subdirectory')
@@ -48,7 +47,7 @@ def build_kernel(kconfig, src, out, make_args):
     print('Run the container: {}'.format(' '.join(start_container_cmd)))
     interrupt = False
     with subprocess.Popen(start_container_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                          universal_newlines=True, bufsize=1) as process:
+                            universal_newlines=True, bufsize=1) as process:
         try:
             for line in process.stdout:
                 print('    {}'.format(line), end='\r')
@@ -117,5 +116,5 @@ def main():
     # Print if successful/completed
     print('\n[+] Done, see the results')
 
-    if __name__ == '__main__':
-        main()
+if __name__ == '__main__':
+    main()
