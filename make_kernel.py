@@ -18,15 +18,16 @@ import shutil
 def build_kernel(kconfig, src, out, make_args):
     # create name for "out_subdir" and print:
     suffix = os.path.splitext(os.path.basename(kconfig))[0]
+    #print(suffix)
     out_subdir = out +  "/" + suffix
-
+    #print(out_subdir)
     # make sure that the out_subdir doesn't already exist (if it does, use it)
     if os.path.isdir(out_subdir):
         print('Output subdirectory already exists, use it (no cleaning!)')
     else:
         print('Output subdirectory doesn\'t exist, create it')
         os.mkdir(out_subdir)
-
+    print('Output subdirectory for this build: {}'.format(out_subdir))
     # Copy kconfig to output subdirectory as ".config"
     print('Copy kconfig to output subdirectory as ".config"')
     shutil.copyfile(kconfig, out_subdir + '/.config')
@@ -111,7 +112,7 @@ def main():
 
 
     # Run build_kernels function
-    build_kernel(args.a, args.k, args.s, args.o, make_args)
+    build_kernel(args.k, args.s, args.o, make_args)
 
     # Print if successful/completed
     print('\n[+] Done, see the results')

@@ -14,11 +14,14 @@ then
 	exit 1
 fi
 
-SRC="$2"
+SRC="$1"
 echo "Source code directory \"$SRC\" is mounted at \"~/src\""
 
-OUT="$3"
+OUT="$2"
 echo "Build output directory \"$OUT\" is mounted at \"~/out\""
+
+shift
+shift
 
 #Do we need to write container IDs to files?
 
@@ -43,8 +46,17 @@ else
 	echo -e "No command supplied; running interactive bash...\n"
 fi
 
+echo ""
+echo ""
+echo ""
+
+echo podman run $INTERACTIVE --rm \                                                                                                                                             -v $SRC:/home/$(id -nu)/src:Z \                                                                                                                                         -v $OUT:/home/$(id -nu)/out:Z \                                                                                                                                      fedora:34 "$@"  
+
+echo ""
+echo ""
+echo ""
 #Z for setting SELinux label--is this what we're using? 
 exec podman run $INTERACTIVE --rm \
-	-v $SRC:/home/$(id -nu)/src:Z
-	-v $SRC:/home/$(id -nu)/src:Z
-kernel-build-container:gcc "$@"
+	-v $SRC:/home/$(id -nu)/src: \
+	-v $OUT:/home/$(id -nu)/out: \
+     fedora:34 "$@"
