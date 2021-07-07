@@ -42,7 +42,7 @@ def build_kernel(kconfig, src, out, make_args):
 
     # add make args, make sure to end with redirect stderr to stdout (2>&1)
     start_container_cmd.extend(make_args)
-    start_container_cmd.extend(['2>&1'])
+    #start_container_cmd.extend(['2>&1'])
 
     # Run the start_container command; make sure to write the output to the build log
     print('Run the container: {}'.format(' '.join(start_container_cmd)))

@@ -57,6 +57,6 @@ echo ""
 echo ""
 #Z for setting SELinux label--is this what we're using? 
 exec podman run $INTERACTIVE --rm \
-	-v $SRC:/home/$(id -nu)/src: \
-	-v $OUT:/home/$(id -nu)/out: \
-     fedora:34 "$@"
+	-v $SRC:/home/$(id -nu)/src:Z \
+	-v $OUT:/home/$(id -nu)/out:Z \
+     "fedora34:2021.07.06" "cd /home/shall/src" "$@"

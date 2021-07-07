@@ -33,7 +33,7 @@ build ()
 
   podman build \
     --tag ${DISTRO_NAME}:${TIMESTAMP} \
-    -f $1/Dockerfile
+    -f dockerfiles/$1/Dockerfile
 }
 
 #For each folder with a dockerfile
@@ -43,7 +43,7 @@ for FILE in dockerfiles/*/; do
     DISTRO_NAME=${FILE:12}
     DISTRO_NAME=${DISTRO_NAME%?}
     
-    
+    build $DISTRO_NAME    
     #echo $DISTRO_NAME
 
     
