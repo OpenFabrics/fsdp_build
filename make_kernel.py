@@ -15,7 +15,7 @@ import shutil
 
 # Builds the Linux kernel using the arguments provided
 # no arch; I believe we are always assuming x86-64
-def build_kernel(kconfig, src, out, make_args):
+def build_kernel(kconfig, src, out, distro, make_args):
     # create name for "out_subdir" and print:
     suffix = os.path.splitext(os.path.basename(kconfig))[0]
     #print(suffix)
@@ -38,7 +38,7 @@ def build_kernel(kconfig, src, out, make_args):
     build_log_fd = open(build_log, "w")
 
     # Write the "start container" command (runs start_container script); 
-    start_container_cmd = ['bash', './start_container.sh', src, out_subdir, '-n', 'make', 'O=~/out/']
+    start_container_cmd = ['bash', './start_container.sh', src, out_subdir, distro, '-n', 'make', 'O=~/out/']
 
     # add make args, make sure to end with redirect stderr to stdout (2>&1)
     start_container_cmd.extend(make_args)
@@ -86,6 +86,8 @@ def main():
                         help='Linux kernel sources directory') 
     parser.add_argument('-o', metavar='out', required=True,
                         help='Build output directory')
+    parser.add_argument('-d', metavar='distro', required=True,
+                        help='Container image distro to use')
     parser.add_argument('make_args', metavar='...', nargs=argparse.REMAINDER,
                         help='additional arguments for \'make\', can be separated by \'--\' delimeter')
     args = parser.parse_args()
@@ -102,7 +104,7 @@ def main():
     if not os.path.isdir(args.o):
         sys.exit('[!] ERROR: can\'t find the build output directory "{}"'.format(args.o))
     print('[+] Using "{}" as build output directory'.format(args.o))
-
+    #TODO: Error handling for "bad distro names"
     # Output any additional make args, if any
     make_args = args.make_args[:]
     if len(make_args):
@@ -112,7 +114,7 @@ def main():
 
 
     # Run build_kernels function
-    build_kernel(args.k, args.s, args.o, make_args)
+    build_kernel(args.k, args.s, args.o, args.d, make_args)
 
     # Print if successful/completed
     print('\n[+] Done, see the results')

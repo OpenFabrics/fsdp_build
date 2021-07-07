@@ -33,6 +33,7 @@ build ()
 
   podman build \
     --tag ${DISTRO_NAME}:${TIMESTAMP} \
+    --build-arg UNAME=$(id -nu) \
     -f dockerfiles/$1/Dockerfile
 }
 

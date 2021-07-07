@@ -1,18 +1,9 @@
 #!/bin/bash
 
-#Assume sudo is never needed; everyone should be able to run rootless podman
+TIMESTAMP=$(date '+%Y.%m.%d')
 
-set -e 
-
-#Check to make sure we have the correct number of arguments
-#If no command is given, run interactive bash in the container
-if [ $# -lt 2 ]
-then
-	echo "usage: ./run_containers.sh src_dir out_dir [-n] [cmd with args]"
-	echo "  use '-n' for non-interactive session"
-	echo "  if cmd is empty, we will start an interactive bash in the container"
-	exit 1
-fi
+DISTRO=$3
+echo "Starting \"$DISTRO:$TIMESTAMP\""
 
 SRC="$1"
 echo "Source code directory \"$SRC\" is mounted at \"~/src\""
@@ -22,41 +13,34 @@ echo "Build output directory \"$OUT\" is mounted at \"~/out\""
 
 shift
 shift
+shift
 
-#Do we need to write container IDs to files?
-
-# NOTE: $# = number of arguments
 
 if [ $# -gt 0 -a "$1" = "-n" ]
 then
-	INTERACTIVE=""
-	#create container_id file?
-	echo "Running podman in NON-interactive mode"
-	shift
+        INTERACTIVE=""
+        #create container_id file?
+        echo "Running podman in NON-interactive mode"
+        shift
 else
-	INTERACTIVE="-it"
-	#create container_id file?
-	echo "Running podman in interactive mode"
+        INTERACTIVE="-it"
+        #create container_id file?
+        echo "Running podman in interactive mode"
 fi
 
 if [ $# -gt 0 ]
 then
-	echo -e "Running \"$@\"\n"
+        echo -e "Running \"$@\"\n"
 else
-	echo -e "No command supplied; running interactive bash...\n"
+        echo -e "No command supplied; running interactive bash...\n"
 fi
 
-echo ""
-echo ""
-echo ""
+#Use the container image with the tag of today's date.
+#I assume maybe we'll rerun container image builds automatically at midnight?
 
-echo podman run $INTERACTIVE --rm \                                                                                                                                             -v $SRC:/home/$(id -nu)/src:Z \                                                                                                                                         -v $OUT:/home/$(id -nu)/out:Z \                                                                                                                                      fedora:34 "$@"  
 
-echo ""
-echo ""
-echo ""
-#Z for setting SELinux label--is this what we're using? 
+#Z for setting SELinux label--is this what we're using?
 exec podman run $INTERACTIVE --rm \
-	-v $SRC:/home/$(id -nu)/src:Z \
-	-v $OUT:/home/$(id -nu)/out:Z \
-     "fedora34:2021.07.06" "cd /home/shall/src" "$@"
+        -v $SRC:/home/$(id -nu)/src:Z \
+        -v $OUT:/home/$(id -nu)/out:Z \
+     "$DISTRO:$TIMESTAMP" /bin/bash -c make O=~/out/
