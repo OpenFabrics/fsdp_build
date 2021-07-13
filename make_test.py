@@ -46,20 +46,15 @@ def run_tests(cmds, src, out, distro):
     print('Saving results log to "results_log.txt" in output subdirectory')
     results_log_fd = open(results_log, "w")
 
-    # Open the "cmds" file; read line by line
+    # Open the "cmds" file; read in the contents
+    # TODO: Add code to "check" if the command's format is correct
+    # before running the program
     cmdfile = open(cmds, "r")
-    commands = cmdfile.readlines()
-    command_string = "-c \""
-
-    for line in commands:
-        command_string += line.strip()
-        command_string += "; "
-
-    command_string += "\""
-
+    command_string = cmdfile.read()
+ 
     
     # Write the "start container" command (runs start_container script); 
-    start_container_cmd = ['bash', './start_container.sh', src, out_subdir, distro, command_string]
+    start_container_cmd = ['bash', './start_container.sh', src, out_subdir, distro, "-c", command_string]
 
     #TODO: Add stderr->stdout back in.
 
