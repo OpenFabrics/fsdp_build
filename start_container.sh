@@ -43,4 +43,4 @@ fi
 exec podman run $INTERACTIVE --rm \
         -v $SRC:/home/$(id -nu)/src:Z \
         -v $OUT:/home/$(id -nu)/out:Z \
-     "$DISTRO:$TIMESTAMP" /bin/bash -c make O=~/out/
+     "$DISTRO:$TIMESTAMP" /bin/bash -c "./$@"

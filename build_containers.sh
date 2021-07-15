@@ -9,7 +9,7 @@ build ()
   # or registry.access.redhat.com/ubi8/ubi:latest
 
   echo -e "\nBuilding a $1 container image..."
-  DISTRO_NAME = $1
+  DISTRO_NAME=$1
   TIMESTAMP=$(date '+%Y.%m.%d')
 
   if  [[ $DISTRO_NAME == fedora* ]]
