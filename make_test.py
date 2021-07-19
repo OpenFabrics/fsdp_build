@@ -49,12 +49,12 @@ def run_tests(cmds, src, out, distro):
     # Open the "cmds" file; read in the contents
     # TODO: Add code to "check" if the command's format is correct
     # before running the program
-    cmdfile = open(cmds, "r")
-    command_string = cmdfile.read()
+    #cmdfile = open(cmds, "r")
+    #command_string = cmdfile.read().strip()
  
     
     # Write the "start container" command (runs start_container script); 
-    start_container_cmd = ['bash', './start_container.sh', src, out_subdir, distro, "-c", command_string]
+    start_container_cmd = ['bash', './start_container.sh', src, out_subdir, distro, cmds]
 
     #TODO: Add stderr->stdout back in.
 
@@ -107,9 +107,9 @@ def main():
     args = parser.parse_args()
 
     # First, try to find all directories specified and make sure they all exist
-    if not os.path.isfile(args.c):
-        sys.exit('[!] ERROR: can\'t find the commands file "{}"'.format(args.c))
-    print('[+] Reading commands to run inside container from "{}"'.format(args.c))
+    #if not os.path.isfile(args.c):
+    #    sys.exit('[!] ERROR: can\'t find the commands file "{}"'.format(args.c))
+    #print('[+] Reading commands to run inside container from "{}"'.format(args.c))
 
     if not os.path.isdir(args.s):
         sys.exit('[!] ERROR: can\'t find the test sources directory "{}"'.format(args.s))

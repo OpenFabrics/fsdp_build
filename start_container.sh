@@ -37,10 +37,11 @@ fi
 
 #Use the container image with the tag of today's date.
 #I assume maybe we'll rerun container image builds automatically at midnight?
-
+echo $@
 
 #Z for setting SELinux label--is this what we're using?
-exec podman run $INTERACTIVE --rm \
-        -v $SRC:/home/$(id -nu)/src:Z \
+exec podman run $INTERACTIVE \
+	-v $SRC:/home/$(id -nu)/src:Z \
         -v $OUT:/home/$(id -nu)/out:Z \
-     "$DISTRO:$TIMESTAMP" /bin/bash -c make O=~/out/
+	-w /home/$(id -nu)/src \
+     $DISTRO:$TIMESTAMP /bin/bash -c "./$@" 

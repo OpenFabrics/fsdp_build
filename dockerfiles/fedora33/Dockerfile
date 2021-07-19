@@ -4,10 +4,5 @@ RUN yum -y update && \
     openssl-devel elfutils-libelf-devel flex python3 python3-pyverbs \
     openmpi kernel libfabric opensm ucx dwarves openssl
 
-ARG UNAME
-#ARG UID
-#ARG GID
-USER ${UNAME}
-WORKDIR /home/${UNAME}/src
 
 
