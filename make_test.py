@@ -102,10 +102,6 @@ def main():
         sys.exit('[!] ERROR: can\'t find the test sources directory "{}"'.format(args.s))
     print('[+] Using "{}" as test sources directory'.format(args.s))
 
-    if not os.path.isdir(args.o):
-        sys.exit('[!] ERROR: can\'t find the results output directory "{}"'.format(args.o))
-    print('[+] Using "{}" as results output directory'.format(args.o))
-    # TODO: Error handling for "bad distro names"
     if not is_valid_distro(args.d):
         sys.exit('[!] ERROR: The container image for "{}" is not available, '
                  'please see the README for list of available container images'.format(args.d))
