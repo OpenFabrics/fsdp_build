@@ -7,7 +7,7 @@ Build container definitions for the FSDP build machine.
 Tests can be run inside build containers on builder-00 using the `make_test.py` script. You must pass in the following parameters:
 
 * -t: The name of the Bash script that contains the **commands** to be run inside of the container.
-  These commands might be compiling a test, running the test, writing output to a file, etc. **NOTE:** this file must be inside your source directory
+  These commands might be compiling a test, running the test, writing output to a file, etc. **NOTE:** this file must be inside your source directory.
   
 * -s: Path to the **source** directory containing the files required to run your tests, etc. 
 
