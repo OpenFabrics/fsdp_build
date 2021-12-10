@@ -3,7 +3,7 @@
 TIMESTAMP=$(date '+%Y.%m.%d')
 
 DISTRO=$3
-echo "Starting \"$DISTRO:$TIMESTAMP\""
+echo "Starting \"$DISTRO:latest\""
 
 SRC="$1"
 echo "Source code directory \"$SRC\" is mounted at \"~/src\""
