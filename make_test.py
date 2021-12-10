@@ -83,7 +83,7 @@ def main():
     parser = argparse.ArgumentParser(description='Build and run tests inside Podman containers on builder-00.')
  
     parser.add_argument('-t', metavar='test_script', required=True,
-                        help='path to Bash script containing commands to compile/run tests inside the container')
+                        help='name of the Bash script containing commands to compile/run tests inside the container')
     parser.add_argument('-s', metavar='src', required=True,
                         help='Directory containing sources required for running tests') 
     parser.add_argument('-o', metavar='out', required=True,
@@ -94,13 +94,18 @@ def main():
 
     # First, try to find all directories specified and make sure they all exist
 
-    if not os.path.isfile(args.t):
-        sys.exit('[!] ERROR: can\'t find the test script "{}"'.format(args.t))
-    print('[+] Using "{}" as the test script'.format(args.t))
-
     if not os.path.isdir(args.s):
         sys.exit('[!] ERROR: can\'t find the test sources directory "{}"'.format(args.s))
     print('[+] Using "{}" as test sources directory'.format(args.s))
+
+    #if the source directory path doesn't end in "/" add a slash
+    source_path = args.s
+    if (source_path[len(source_path) - 1: len(source_path)] != "/"):
+        args.s += '/'
+
+    if not os.path.isfile(args.s + args.t):
+        sys.exit('[!] ERROR: can\'t find the test script "{}" in {}'.format(args.t, args.s))
+    print('[+] Using "{}" as the test script'.format(args.t))
 
     if not is_valid_distro(args.d):
         sys.exit('[!] ERROR: The container image for "{}" is not available, '

@@ -35,18 +35,18 @@ else
         echo -e "No command supplied; running interactive bash...\n"
 fi
 
-#Use the container image with the tag of today's date.
-#I assume maybe we'll rerun container image builds automatically at midnight?
-echo $@
+#Use the latest tag to tell which version of the image is the newest
+# echo $@
 
-SCRIPT=$@
-END_OF_SCRIPT=${SCRIPT%/*}
-SCRIPT=${SCRIPT#$END_OF_SCRIPT}
-echo $SCRIPT
+# SCRIPT=$@
+# END_OF_SCRIPT=${SCRIPT%/*}
+# SCRIPT=${SCRIPT#$END_OF_SCRIPT}
+# echo $SCRIPT
 
 #Z for setting SELinux label--is this what we're using?
 exec podman run $INTERACTIVE \
 	-v $SRC:/home/$(id -nu)/src:Z \
         -v $OUT:/home/$(id -nu)/out:Z \
 	-w /home/$(id -nu)/src \
-     $DISTRO:"latest" /bin/bash "$@" 
+     $DISTRO:"latest" /bin/bash "./$@" 
+
