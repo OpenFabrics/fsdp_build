@@ -33,6 +33,7 @@ build ()
 
   podman build \
     --tag ${DISTRO_NAME}:${TIMESTAMP} \
+    --tag ${DISTRO_NAME}:"latest" \
     -f dockerfiles/$1/Dockerfile
 }
 

@@ -39,9 +39,14 @@ fi
 #I assume maybe we'll rerun container image builds automatically at midnight?
 echo $@
 
+SCRIPT=$@
+END_OF_SCRIPT=${SCRIPT%/*}
+SCRIPT=${SCRIPT#$END_OF_SCRIPT}
+echo $SCRIPT
+
 #Z for setting SELinux label--is this what we're using?
 exec podman run $INTERACTIVE \
 	-v $SRC:/home/$(id -nu)/src:Z \
         -v $OUT:/home/$(id -nu)/out:Z \
 	-w /home/$(id -nu)/src \
-     $DISTRO:$TIMESTAMP /bin/bash -c "./$@" 
+     $DISTRO:"latest" /bin/bash "$@" 
