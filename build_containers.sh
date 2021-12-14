@@ -37,7 +37,7 @@ build ()
     podman untag ${DISTRO_NAME}:"latest"
 
   } || { #catch
-    echo ""
+    echo "${DISTRO_NAME} is not an existing image on this machine, building..."
   }
 
   podman build \
