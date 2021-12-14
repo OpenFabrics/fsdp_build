@@ -10,7 +10,8 @@ build ()
 
   echo -e "\nBuilding a $1 container image..."
   DISTRO_NAME=$1
-  TIMESTAMP=$(date '+%Y.%m.%d')
+  #Timestamp based on the last time the file was modified
+  TIMESTAMP=$(date -r $2 '+%Y.%m.%d')
 
   if  [[ $DISTRO_NAME == fedora* ]]
   then
@@ -31,6 +32,14 @@ build ()
     echo "Unknown distro. Skipping..."
   fi
 
+  #this basically tries to remove the tags from the current image prior to the images being rebuilt so that they don't get extra tags
+  { #try
+    podman untag ${DISTRO_NAME}:"latest"
+
+  } || { #catch
+    echo ""
+  }
+
   podman build \
     --tag ${DISTRO_NAME}:${TIMESTAMP} \
     --tag ${DISTRO_NAME}:"latest" \
@@ -44,7 +53,7 @@ for FILE in dockerfiles/*/; do
     DISTRO_NAME=${FILE:12}
     DISTRO_NAME=${DISTRO_NAME%?}
     
-    build $DISTRO_NAME    
+    build $DISTRO_NAME $DOCKERFILE   
     #echo $DISTRO_NAME
 
     
