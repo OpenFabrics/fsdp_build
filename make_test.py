@@ -13,9 +13,10 @@ import shutil
 
 
 def is_valid_distro(distro_string):
-    if distro_string.lower() is "fedora32" or "fedora33" or "fedora34" or "rhel7" or "rhel8":
-        return True
-    return False
+    for distro in os.listdir('dockerfiles/'):
+        if distro_string.lower() == distro:
+            return True
+        return False
 
 
 # Runs the test script within a container, using the container image indicated by the user.
