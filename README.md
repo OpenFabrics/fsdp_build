@@ -6,74 +6,78 @@ Build container definitions for the FSDP build machine.
 
 ## Getting started
 
-The first think you're going to need to build and run these different containers is, of course, the contents of this repository. The contents can be located wherever you would like but obviously you're going to want to be able to find it when you need it. 
+What are containers and why are they useful? Linux containers are essentially a distinct and isolated virtualization of an operating system. Think of them like separate virtual machines except instead of having a certain amount of hardware dedicated to them, they run almost as an extension of your own machine in a different file system. This allows you to do things like see how different files compile across different versions of linux distros or run a combination of different commands in a stable environment and see how they respond to any given linux distro. 
+
+The first thing you're going to need to build and run these different containers is, of course, the contents of this repository. The contents can be located wherever you would like but obviously you're going to want to be able to find it when you need it. 
+
+1. ## Installing podman
 
 The next thing you're going to need is a package called Pod Manager or "podman" for short. Podman is a package used for the running and management of linux containers. Because of this, it is **not** directly supported on Windows or MacOS. It can still be used however if you utilize a virtual machine. Information on specific podman features can be found on [the podman.io website](https://podman.io/). For the purposes of these scripts all you'll need to do is run the following commands:
 
-- ### Arch Linux & Manjaro Linux
+### Arch Linux & Manjaro Linux
 ```
 sudo pacman -S podman
 ```
 
-- ### CentOS
+### CentOS
 ```
 sudo yum -y install podman
 ```
 
-- ### Debian
+### Debian
 ```
 sudo apt-get -y install podman
 ```
 
-- ### Fedora
+### Fedora
 ```
 sudo dnf -y isntall podman
 ```
 
-- ### Fedora-CoreOS, Fedora SilverBlue
+### Fedora-CoreOS, Fedora SilverBlue
 ```
 Built-in, no need for install
 ```
 
-- ### Gentoo
+### Gentoo
 ```
 sudo emerge app-emulation/podman
 ```
 
-- ### Open Embedded 
+### Open Embedded 
 ```
 bitbake podman
 ```
 
-- ### openSUSE
+### openSUSE
 ```
 sudo zypper install podman
 ```
 
-- ### openSUSE Kubic
+### openSUSE Kubic
 ```
 Built-in, no need for install
 ```
 
-- ### RHEL7
+### RHEL7
 ```
 sudo subscription-manager repos --enable=rhel-7-server-extras-rpms
 sudo yum -y install podman
 ```
 
-- ### RHEL8 
+### RHEL8 
 ```
 sudo yum module enable -y container-tools:rhel8
 sudo yum module install -y container-tools:rhel8
 ```
 
-- ### Ubuntu 
+### Ubuntu 
 ```
 sudo apt-get -y update
 sudo apt-get -y install podman
 ```
 
-## Creating Container images
+2. ## Creating Container images
 
 The next step in the process is creating the images for the linux containers you're going to be using. If you aren't familiar with a container image, think of it as essentially a blueprint for a container. Whenever you create a container the container will look at the information and configuration stored in the container image and then use that configuration to create a fresh container for you to use as needed. 
 
@@ -95,17 +99,71 @@ Luckily for us, the scripts provided for running commands within containers alre
 
 Essentially, your Dockerfiles are going to include a Docker image for the OS, and then any any dependencies you would like installed within the container. There are many pre existing OS images out there already within the Docker repository. These can be seen using the command `docker search`. An example of this would be something like `docker search centos` to display your pre existing options for centOS operating systems. Additional information about the Docker repository can be found [here](https://docs.docker.com/docker-hub/repos/).
 
-Tests can be run inside build containers on builder-00 using the `make_test.py` script. You must pass in the following parameters:
+#### Example of a Dockerfile:
+```
+FROM fedora:32 #docker image
 
-* -t: The name of the Bash script that contains the **commands** to be run inside of the container.
-  These commands might be compiling a test, running the test, writing output to a file, etc. **NOTE:** this file must be inside your source directory.
+#dependencies you want in your container
+RUN yum -y update && \
+    yum -y install gcc bison ncurses ncurses-devel bc make git \
+    openssl-devel
+```
+
+Once you've written your Dockerfile you'll want to save it in a similar file structure that you see in the `dockerfiles/` directory. Basically, you have to create a directory that's title matches the name of the operating system omitting any punctuation. For our previous example we would title it `fedora32`. Overall, what you name this directory isn't 100% crucial, it's just to differentiate your different images, but making the name the same as the distro it will be using will make things more clear and easier in the future. Within that new directory should be your Dockerfile titled `Dockerfile`. The final path should look something like `dockerfiles/<OS name>/Dockerfile`.
+
+### Using provided images
+
+For this you actually shouldn't need to change much, all of the Dockerfiles should be configured before hand and you can see the lists of dependencies each one installs within their Dockerfile.
+
+3. ## Building Container Images
+
+This step should be fairly simple as there is a script provided within this repository that will build the container images for you. First, run the following command:
+```
+bash build_containers.sh
+```
+This command will likely take a little while when you run it for the first time on a machine. After it is finished however, it should have built container images for every directory in `dockerfiles/`. To verify this, run the following command: 
+```
+podman images
+```
+The output of this command should be all the existing linux container images on your system currently and you should see two entries for each of your container images. The reason each one gets two entries is you'll notice they have different tags. One of them will be a date and another will be "latest". The reason behind this is the date shows the late time the Dockerfile for that image was modified and the latest tag shows us which image is the latest version for that distro.
+
+**Troubleshooting**:
+
+If you don't receive any output from this command or if the command is missing an image that you expected it to have, the easiest way to troubleshoot this issue is to run the `podman build -f dockerfiles/<distro name>/Dockerfile` command on the individual dockerfile that is giving you trouble. This should give you more detail on the error that's occurring. More about this command and different options for it can be found [here](https://docs.podman.io/en/latest/markdown/podman-build.1.html).
+
+4. ## Requirements for Running Test Scripts
+
+Now that we have our images created, we can start building containers and running script within them. Before we start doing this however, there are a few things we must be sure we have in place. A few things this script requires are:
+* A source directory
+* An output directory
+* A script file to run
+
+#### Output directory
+
+This doesn't have to be anything fancy, it can be any directory anywhere on your system that's going to be mounted to `/home/<your username>/out/` within the container. It doesn't even have to be a preexisting file on your machine, if you hand the script a path to a directory that doesn't exist already it will create that directory for you. One thing to note however is this is where the script will be storing the output from the scripts that you run in a file titled `results_log.txt`. If it finds another file with the same name in the given output directory already **it will overwrite the old file**. So, if you are running multiple different containers and need the output be sure to use different output directories.
+
+#### Source directory
+
+The source directory, like the output directory, can be any directory on your system that will be mounted to `/home/<your username>/src/` within your container. However, in the case of the source directory, the contents matter. This directory is going to be where you will want to store any files that your scripts require to execute **including the script itself**. An important thing to note as well is `/home/<your username>/src/` is going to be your home and starting directory within the container. This will come in handy when writing your scripts so it's good to keep in mind.
+
+#### Script file
+
+This is going to be the script file containing the commands you would like executed within the container. This should just be a standard bash script and, once again, **it must be within your source directory**. There is a lot of freedom to what you can do within these containers as they're all fresh versions of that distro with certain packages already installed. One good command for testing that I've found is `cat /etc/os-release` as the output of this command will show you more information about the operating system of the container it's being run in.
+
+5. ## Running Test Scripts
+
+Tests can be run inside build containers using the `make_test.py` script. You must pass in the following parameters:
+
+* -t: The **name** of the Bash script that contains the commands to be run inside of the container.
+  These commands might be compiling a test, running the test, writing output to a file, etc. **IMPORTANT:** This is only the name of script file **not** a path to the file. Make sure your script with is **inside your source directory**.
   
-* -s: Path to the **source** directory containing the files required to run your tests, etc. 
+* -s: **Full path** to the **source** directory containing the files required to run your tests, etc. 
 
-* -o: Path to the **output** directory where test artifacts, results, etc. will be stored after you are finished with your container.
+* -o: **Full path** to the **output** directory where test artifacts, results, etc. will be stored after you are finished with your container.
 
-* -d: The **distro** you would like to select a container image of. Currently, the following options are available:
+* -d: The **distro** you would like to select a container image of. Currently, the following options are the provided distros:
 
+  * fedora31
   * fedora32
   * fedora33
   * fedora34 
