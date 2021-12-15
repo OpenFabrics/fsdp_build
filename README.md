@@ -12,7 +12,7 @@ The first thing you're going to need to build and run these different containers
 
 ## 1. Installing podman
 
-The next thing you're going to need is a package called Pod Manager or "podman" for short. Podman is a package used for the running and management of linux containers. Because of this, it is **not** directly supported on Windows or MacOS. It can still be used however if you utilize a virtual machine. Information on specific podman features can be found on [the podman.io website](https://podman.io/). For the purposes of these scripts all you'll need to do is run the following commands:
+The next thing you're going to need is a package called Pod Manager or "podman" for short. Podman is a package used for the running and management of linux containers. Because of this, it is **not** directly supported on Windows or MacOS. It can still be used, however, if you utilize a virtual machine. Information on specific podman features can be found on [the podman.io website](https://podman.io/). For the purposes of these scripts all you'll need to do is run the following commands:
 
 ### Arch Linux & Manjaro Linux
 ```
@@ -121,7 +121,7 @@ This step should be fairly simple as there is a script provided within this repo
 ```
 bash build_containers.sh
 ```
-This command will likely take a little while when you run it for the first time on a machine. After it is finished however, it should have built container images for every directory in `dockerfiles/`. To verify this, run the following command: 
+This command will likely take a little while when you run it for the first time on a machine. After it is finished, however, it should have built container images for every directory in `dockerfiles/`. To verify this, run the following command: 
 ```
 podman images
 ```
@@ -133,7 +133,7 @@ If you don't receive any output from this command or if the command is missing a
 
 ## 4. Requirements for Running Test Scripts
 
-Now that we have our images created, we can start building containers and running scripts within them. Before we start doing this however, there are a few things we must be sure we have in place. A few things this script requires are:
+Now that we have our images created, we can start building containers and running scripts within them. Before we start doing this, however, there are a few things we must be sure we have in place. A few things this script requires are:
 * A source directory
 * An output directory
 * A script file to run
