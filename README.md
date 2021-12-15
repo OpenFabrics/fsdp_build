@@ -87,7 +87,7 @@ When it comes to container images you have two options:
 
 ### Creating your own container image
 
-The process of making simple container images actually quite simple and straight forward. Configuring container images is something done using what are called **Dockerfiles**. Dockerfiles are essentially used as our configuration and structure for container images. If you've never seen a Dockerfile before they sound intimidating but in reality they're actually quite simple and intuitive. They have some specific options and instructions that I will detail below:
+The process of making basic container images actually quite simple and straight forward. Configuring container images is something done using what are called **Dockerfiles**. Dockerfiles are essentially used as our configuration and structure for container images. If you've never seen a Dockerfile before they sound intimidating but in reality they're actually quite simple and intuitive. They have some specific options and instructions such as:
 
 * `FROM` &nbsp;"creates a layer from a given Docker image"
 * `COPY` &nbsp;"adds files from your Docker client's current directory"
@@ -97,23 +97,23 @@ The process of making simple container images actually quite simple and straight
 
 Luckily for us, the scripts provided for running commands within containers already handle copying files into the container as well as running commands from within the container so we don't need to worry about `CMD` or `COPY`.
 
-Essentially, your Dockerfiles are going to include a Docker image for the OS, and then any any dependencies you would like installed within the container. There are many pre existing OS images out there already within the Docker repository. These can be seen using the command `docker search`. An example of this would be something like `docker search centos` to display your pre existing options for centOS operating systems. Additional information about the Docker repository can be found [here](https://docs.docker.com/docker-hub/repos/).
+Essentially, your Dockerfiles are going to include a Docker image for the OS, and then any packages you would like installed within the container. There are many pre existing OS images out there already within the Docker repository. These can be seen using the command `docker search`. An example of this would be something like `docker search centos` to display your pre existing options for centOS operating systems. Additional information about the Docker repository can be found [here](https://docs.docker.com/docker-hub/repos/).
 
 #### Example of a Dockerfile:
 ```
 FROM fedora:32 #docker image
 
-#dependencies you want in your container
+#packages you want installed in your container
 RUN yum -y update && \
     yum -y install gcc bison ncurses ncurses-devel bc make git \
     openssl-devel
 ```
 
-Once you've written your Dockerfile you'll want to save it in a similar file structure that you see in the `dockerfiles/` directory. Basically, you have to create a directory that's title matches the name of the operating system omitting any punctuation. For our previous example we would title it `fedora32`. Overall, what you name this directory isn't 100% crucial, it's just to differentiate your different images, but making the name the same as the distro it will be using will make things more clear and easier in the future. Within that new directory should be your Dockerfile titled `Dockerfile`. The final path should look something like `dockerfiles/<OS name>/Dockerfile`.
+Once you've written your Dockerfile you'll want to save it in a similar file structure that you see in the `dockerfiles/` directory. Basically, you have to create a directory thats title matches the name of the operating system you would like to use for that image omitting any punctuation. For our previous example we would title it `fedora32`. Overall, what you name this directory isn't 100% crucial, it's just to differentiate your different images, but making the name the same as the distro it will be using will make things more clear and easier in the future. Within that new directory should be your Dockerfile titled `Dockerfile`. The final path should look something like `dockerfiles/<OS name>/Dockerfile`.
 
 ### Using provided images
 
-For this you actually shouldn't need to change much, all of the Dockerfiles should be configured before hand and you can see the lists of dependencies each one installs within their Dockerfile.
+For this you actually shouldn't need to change much, all of the Dockerfiles should be configured before hand and you can see the lists of packages each one installs within their Dockerfile.
 
 ## 3. Building Container Images
 
@@ -125,7 +125,7 @@ This command will likely take a little while when you run it for the first time 
 ```
 podman images
 ```
-The output of this command should be all the existing linux container images on your system currently and you should see two entries for each of your container images. The reason each one gets two entries is you'll notice they have different tags. One of them will be a date and another will be "latest". The reason behind this is the date shows the late time the Dockerfile for that image was modified and the latest tag shows us which image is the latest version for that distro.
+The output of this command should be all the existing linux container images on your system currently and you should see two entries for each of your container images. The reason each one gets two entries is you'll notice they have different tags. One of them will be a date and another will be "latest". The reason behind this is the date shows the last time the Dockerfile for that image was modified and the latest tag shows us which image is the latest version for that distro.
 
 **Troubleshooting**:
 
@@ -133,29 +133,29 @@ If you don't receive any output from this command or if the command is missing a
 
 ## 4. Requirements for Running Test Scripts
 
-Now that we have our images created, we can start building containers and running script within them. Before we start doing this however, there are a few things we must be sure we have in place. A few things this script requires are:
+Now that we have our images created, we can start building containers and running scripts within them. Before we start doing this however, there are a few things we must be sure we have in place. A few things this script requires are:
 * A source directory
 * An output directory
 * A script file to run
 
 #### Output directory
 
-This doesn't have to be anything fancy, it can be any directory anywhere on your system that's going to be mounted to `/home/<your username>/out/` within the container. It doesn't even have to be a preexisting file on your machine, if you hand the script a path to a directory that doesn't exist already it will create that directory for you. One thing to note however is this is where the script will be storing the output from the scripts that you run in a file titled `results_log.txt`. If it finds another file with the same name in the given output directory already **it will overwrite the old file**. So, if you are running multiple different containers and need the output be sure to use different output directories.
+This doesn't have to be anything fancy, it can be any directory anywhere on your system that's going to be mounted to `/home/<your username>/out/` within the container. It doesn't even have to be a preexisting file on your machine, if you hand the script a path to a directory that doesn't exist already it will create that directory for you. One thing to note however is this is where the container will be storing the output from the scripts that you run in a file titled `results_log.txt`. If it finds another file with the same name in the given output directory already **it will overwrite the old file**. So, if you are running multiple different containers and need the output be sure to use different output directories.
 
 #### Source directory
 
-The source directory, like the output directory, can be any directory on your system that will be mounted to `/home/<your username>/src/` within your container. However, in the case of the source directory, the contents matter. This directory is going to be where you will want to store any files that your scripts require to execute **including the script itself**. An important thing to note as well is `/home/<your username>/src/` is going to be your home and starting directory within the container. This will come in handy when writing your scripts so it's good to keep in mind.
+The source directory, like the output directory, can be any directory on your system that will be mounted to `/home/<your username>/src/` within your container. However, in the case of the source directory, the contents matter. This directory is going to be where you will want to store any files that your scripts require to execute **including the script itself**. An important thing to note as well is `/home/<your username>/src/` is going to be ***your home and starting directory*** within the container. This will come in handy when writing your scripts so it's good to keep in mind.
 
 #### Script file
 
-This is going to be the script file containing the commands you would like executed within the container. This should just be a standard bash script and, once again, **it must be within your source directory**. There is a lot of freedom to what you can do within these containers as they're all fresh versions of that distro with certain packages already installed. One good command for testing that I've found is `cat /etc/os-release` as the output of this command will show you more information about the operating system of the container it's being run in.
+This is going to be the script file containing the commands you would like executed within the container. This should just be a standard bash script and, once again, **it must be within your source directory**. There is a lot of freedom when it comes to what you can do within these containers as they're all fresh versions of that distro with certain packages already installed. One good command for testing that I've found is `cat /etc/os-release` as the output of this command will show you more information about the operating system of the container it's being run inside.
 
 ## 5. Running Test Scripts
 
 Tests can be run inside build containers using the `make_test.py` script. You must pass in the following parameters:
 
 * -t: The **name** of the Bash script that contains the commands to be run inside of the container.
-  These commands might be compiling a test, running the test, writing output to a file, etc. **IMPORTANT:** This is only the name of script file **not** a path to the file. Make sure your script with is **inside your source directory**.
+  These commands might be compiling a test, running the test, writing output to a file, etc. **IMPORTANT:** This is only the name of script file **not** a path to the file. Make sure your script file is **inside your source directory**.
   
 * -s: **Full path** to the **source** directory containing the files required to run your tests, etc. 
 
@@ -169,6 +169,8 @@ Tests can be run inside build containers using the `make_test.py` script. You mu
   * fedora34 
   * rhel7
   * rhel8
+  
+  but if you created your own custom image you'll want to use whatever you titled the directory that holds your Dockerfile as this parameter 
 
 ### Running `make_test.py`
 
