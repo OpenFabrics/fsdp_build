@@ -31,7 +31,7 @@ sudo apt-get -y install podman
 
 ### Fedora
 ```
-sudo dnf -y isntall podman
+sudo dnf -y install podman
 ```
 
 ### Fedora-CoreOS, Fedora SilverBlue
