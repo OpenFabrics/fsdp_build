@@ -10,7 +10,7 @@ What are containers and why are they useful? Linux containers are essentially a 
 
 The first thing you're going to need to build and run these different containers is, of course, the contents of this repository. The contents can be located wherever you would like but obviously you're going to want to be able to find it when you need it. 
 
-1. ## Installing podman
+## 1. Installing podman
 
 The next thing you're going to need is a package called Pod Manager or "podman" for short. Podman is a package used for the running and management of linux containers. Because of this, it is **not** directly supported on Windows or MacOS. It can still be used however if you utilize a virtual machine. Information on specific podman features can be found on [the podman.io website](https://podman.io/). For the purposes of these scripts all you'll need to do is run the following commands:
 
@@ -77,7 +77,7 @@ sudo apt-get -y update
 sudo apt-get -y install podman
 ```
 
-2. ## Creating Container images
+## 2. Creating Container images
 
 The next step in the process is creating the images for the linux containers you're going to be using. If you aren't familiar with a container image, think of it as essentially a blueprint for a container. Whenever you create a container the container will look at the information and configuration stored in the container image and then use that configuration to create a fresh container for you to use as needed. 
 
@@ -115,7 +115,7 @@ Once you've written your Dockerfile you'll want to save it in a similar file str
 
 For this you actually shouldn't need to change much, all of the Dockerfiles should be configured before hand and you can see the lists of dependencies each one installs within their Dockerfile.
 
-3. ## Building Container Images
+## 3. Building Container Images
 
 This step should be fairly simple as there is a script provided within this repository that will build the container images for you. First, run the following command:
 ```
@@ -131,7 +131,7 @@ The output of this command should be all the existing linux container images on 
 
 If you don't receive any output from this command or if the command is missing an image that you expected it to have, the easiest way to troubleshoot this issue is to run the `podman build -f dockerfiles/<distro name>/Dockerfile` command on the individual dockerfile that is giving you trouble. This should give you more detail on the error that's occurring. More about this command and different options for it can be found [here](https://docs.podman.io/en/latest/markdown/podman-build.1.html).
 
-4. ## Requirements for Running Test Scripts
+## 4. Requirements for Running Test Scripts
 
 Now that we have our images created, we can start building containers and running script within them. Before we start doing this however, there are a few things we must be sure we have in place. A few things this script requires are:
 * A source directory
@@ -150,7 +150,7 @@ The source directory, like the output directory, can be any directory on your sy
 
 This is going to be the script file containing the commands you would like executed within the container. This should just be a standard bash script and, once again, **it must be within your source directory**. There is a lot of freedom to what you can do within these containers as they're all fresh versions of that distro with certain packages already installed. One good command for testing that I've found is `cat /etc/os-release` as the output of this command will show you more information about the operating system of the container it's being run in.
 
-5. ## Running Test Scripts
+## 5. Running Test Scripts
 
 Tests can be run inside build containers using the `make_test.py` script. You must pass in the following parameters:
 
