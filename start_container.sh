@@ -42,7 +42,7 @@ then
         #if a parameter is provided and it is not an empty string
         if [ ${#1} -gt 0 ]
         then
-                echo -e "Running \"$@\"\n"\
+                echo -e "Running \"$@\"\n"
         else 
                 echo "No script file provided"
         fi
