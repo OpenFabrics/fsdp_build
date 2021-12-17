@@ -14,7 +14,6 @@ import shutil
 
 def is_valid_distro(distro_string):
     for distro in os.listdir('dockerfiles/'):
-        print(distro)
         if distro_string.lower() == distro:
             return True
     return False
@@ -45,7 +44,7 @@ def run_tests(cmds, src, out, distro):
 
 
     # Run the start_container command; make sure to write the output to the build log
-    print('Run the container: {}'.format(' '.join(start_container_cmd)))
+    # print('Run the container: {}'.format(' '.join(start_container_cmd)))
     interrupt = False
     with subprocess.Popen(start_container_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                           universal_newlines=True, bufsize=1) as process:
@@ -56,7 +55,7 @@ def run_tests(cmds, src, out, distro):
             return_code = process.wait()
 
             # and also, output the result of running the container
-            print('Running the container returned {}'.format(return_code))
+            print('Running the container returned exit code {}'.format(return_code))
             print('See results log: {}'.format(results_log))
         # make sure to handle KeyboardInterrupts/interruption of the test's process
         except KeyboardInterrupt:
@@ -87,10 +86,6 @@ def main():
                         help='Container image distro to use')
     args = parser.parse_args()
 
-    if (args.t):
-        print("ARG T =" + args.t)
-    else:
-        print("NO ARG T")
 
     # First, try to find all directories specified and make sure they all exist
 

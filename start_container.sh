@@ -15,14 +15,6 @@ shift
 shift
 shift
 
-if [${#1} -gt 0]
-then
-        echo "this is not an empty string"
-else 
-        echo "this is an empty string"
-
-fi
-
 #if we have a fourth parameter and it isn't an empty string
 if [ $# -gt 0 -a ${#1} -gt 0 ]
 then
