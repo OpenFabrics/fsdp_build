@@ -1,6 +1,3 @@
-# fsdp_build
-
-Build container definitions for the FSDP build machine.
 
 # Instructions for Running Tests inside Build Containers
 
@@ -87,7 +84,7 @@ When it comes to container images you have two options:
 
 ### Creating your own container image
 
-The process of making basic container images actually quite simple and straight forward. Configuring container images is something done using what are called **Dockerfiles**. Dockerfiles are essentially used as our configuration and structure for container images. If you've never seen a Dockerfile before they sound intimidating but in reality they're actually quite simple and intuitive. They have some specific options and instructions such as:
+The process of making basic container images actually quite simple and straight forward. Configuring container images is something done using what are called **Dockerfiles**. Dockerfiles are essentially used as our configuration and structure for container images. If you've never seen a Dockerfile before they might sound intimidating but in reality they're actually quite simple and intuitive. They have some specific options and instructions such as:
 
 * `FROM` &nbsp;"creates a layer from a given Docker image"
 * `COPY` &nbsp;"adds files from your Docker client's current directory"
@@ -97,7 +94,7 @@ The process of making basic container images actually quite simple and straight 
 
 Luckily for us, the scripts provided for running commands within containers already handle copying files into the container as well as running commands from within the container so we don't need to worry about `CMD` or `COPY`.
 
-Essentially, your Dockerfiles are going to include a Docker image for the OS, and then any packages you would like installed within the container. There are many pre existing OS images out there already within the Docker repository. These can be seen using the command `docker search`. An example of this would be something like `docker search centos` to display your pre existing options for centOS operating systems. Additional information about the Docker repository can be found [here](https://docs.docker.com/docker-hub/repos/).
+Essentially, your Dockerfiles are going to include a Docker image for the OS, and then any packages you would like installed within the container. There are many pre existing OS images out there already within the Docker repository which can be found using the command `docker search`. An example of this would be something like `docker search centos` to display your pre existing options for centOS operating systems. Additional information about the Docker repository can be found [here](https://docs.docker.com/docker-hub/repos/).
 
 #### Example of a Dockerfile:
 ```
@@ -109,11 +106,11 @@ RUN yum -y update && \
     openssl-devel
 ```
 
-Once you've written your Dockerfile you'll want to save it in a similar file structure that you see in the `dockerfiles/` directory. Basically, you have to create a directory thats title matches the name of the operating system you would like to use for that image omitting any punctuation. For our previous example we would title it `fedora32`. Overall, what you name this directory isn't 100% crucial, it's just to differentiate your different images, but making the name the same as the distro it will be using will make things more clear and easier in the future. Within that new directory should be your Dockerfile titled `Dockerfile`. The final path should look something like `dockerfiles/<OS name>/Dockerfile`.
+Once you've written your Dockerfile you'll want to save it in a similar file structure that you see in the `dockerfiles/` directory. Basically, you have to create a directory thats title matches the name of the operating system you would like to use for that image omitting any punctuation. Like, for example, in our example of a Dockerfile we would title the directory `fedora32`. Overall, what you name this directory isn't 100% crucial, it's just to differentiate your different images, but making the name the same as the distro it will be using will make things more clear and easier in the future. Within that new directory should be your Dockerfile titled `Dockerfile`. The final path should look something like `dockerfiles/<OS name>/Dockerfile`.
 
 ### Using provided images
 
-For this you actually shouldn't need to change much, all of the Dockerfiles should be configured before hand and you can see the lists of packages each one installs within their Dockerfile.
+For provided images you actually shouldn't need to change much, all of the Dockerfiles should be configured before hand and you can see the lists of packages each one installs within their Dockerfile.
 
 ## 3. Building Container Images
 
@@ -133,18 +130,18 @@ If you don't receive any output from this command or if the command is missing a
 
 ## 4. Requirements for Running Test Scripts
 
-Now that we have our images created, we can start building containers and running scripts within them. Before we start doing this, however, there are a few things we must be sure we have in place. A few things this script requires are:
-* A source directory
+Now that we have our images created, we can start building containers and running scripts within them. Before we start doing this, however, there are a few things we must be sure we have in place. These things are as follows:
 * An output directory
+* A source directory
 * A script file to run
 
 #### Output directory
 
-This doesn't have to be anything fancy, it can be any directory anywhere on your system that's going to be mounted to `/home/<your username>/out/` within the container. It doesn't even have to be a preexisting file on your machine, if you hand the script a path to a directory that doesn't exist already it will create that directory for you. One thing to note however is this is where the container will be storing the output from the scripts that you run in a file titled `results_log.txt`. If it finds another file with the same name in the given output directory already **it will overwrite the old file**. So, if you are running multiple different containers and need the output be sure to use different output directories.
+This doesn't have to be anything fancy, it can be any directory anywhere on your system that's going to be mounted to `/home/<your username>/out/` within the container. It doesn't even have to be a preexisting file on your machine, if you hand the script a path to a directory that doesn't exist already it will create that directory for you. One thing to note however is this is where the container will be storing the output from the scripts that you run in a file titled `results_log.txt`. If it finds another file with the same name in the given output directory already **it will overwrite the old file**. So, if you are running multiple different tests inside containers and need the output be sure to use different output directories.
 
 #### Source directory
 
-The source directory, like the output directory, can be any directory on your system that will be mounted to `/home/<your username>/src/` within your container. However, in the case of the source directory, the contents matter. This directory is going to be where you will want to store any files that your scripts require to execute **including the script itself**. An important thing to note as well is `/home/<your username>/src/` is going to be ***your home and starting directory*** within the container. This will come in handy when writing your scripts so it's good to keep in mind.
+The source directory, like the output directory, can be any directory on your system that will be mounted to `/home/<your username>/src/` within your container. However, in the case of the source directory, the contents matter. This directory is going to be where you will want to store any files that your scripts require to execute **including the script itself**. An important thing to note as well is `/home/<your username>/src/` is going to be ***your starting directory*** within the container. This will come in handy when writing your scripts so it's good to keep in mind.
 
 #### Script file
 
@@ -175,7 +172,7 @@ Tests can be run inside build containers using the `make_test.py` script. You mu
 ### Running `make_test.py`
 
 ```
-python3 make_test.py -t commands.sh -s ../test_sources/ -o ../test_output -d rhel7
+python3 make_test.py -t commands.sh -s ../test_sources/ -o ../test_output/ -d rhel7
 ```
 
 You will find the results of your tests in `results_log.txt`, 
