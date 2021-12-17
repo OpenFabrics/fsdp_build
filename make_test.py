@@ -14,9 +14,10 @@ import shutil
 
 def is_valid_distro(distro_string):
     for distro in os.listdir('dockerfiles/'):
+        print(distro)
         if distro_string.lower() == distro:
             return True
-        return False
+    return False
 
 
 # Runs the test script within a container, using the container image indicated by the user.
@@ -39,13 +40,6 @@ def run_tests(cmds, src, out, distro):
     results_log_fd = open(results_log, "w")
 
      
-    # Write the "start container" command (runs start_container script); 
-    start_container_cmd = ['bash', './start_container.sh', src, out_subdir, distro, cmds]
-
-    #TODO: Add stderr->stdout back in.
-
-    #start_container_cmd.extend(['2>&1'])
-
     # Write the "start container" command (runs start_container script); 
     start_container_cmd = ['bash', './start_container.sh', src, out_subdir, distro, cmds]
 
