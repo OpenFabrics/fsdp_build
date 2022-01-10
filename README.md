@@ -168,9 +168,32 @@ The source directory, like the output directory, can be any directory on your sy
 
 This is going to be the script file containing the commands you would like executed within the container. This should just be a standard bash script and, once again, **it must be within your source directory**. There is a lot of freedom when it comes to what you can do within these containers as they're all fresh versions of that distro with certain packages already installed. One good command for testing that I've found is `cat /etc/os-release` as the output of this command will show you more information about the operating system of the container it's being run inside.
 
+#### Example script
+
+Below is an example of a script that builds a linux kernel within the container and sends the compiled kernel to the directory you listed as your output directory:
+```
+#!/bin/bash
+
+#change to our output directory
+cd ../out/
+
+#install the source code for the linux kernel (version 5.9.8)
+wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.9.8.tar.xz
+
+#extract source code
+tar xvf linux-5.9.8.tar.xz
+
+#change directory into the newly extracted directory and compile the
+#kernel with the pre-existing configuration
+cd linux-5.9.8
+make oldconfig
+```
+
 ## 5. Running Test Scripts
 
-Tests can be run inside build containers using the `make_test.py` script. You must pass in the following parameters:
+Tests can be run inside build containers using the `make_test.py` script. 
+
+**Note**, the `make_test.py` script uses relative pathing and expects you to be in the same directory that houses it and your `dockerfiles/` directory when you run it. If you are in a different directory the scripts will likely fail. Along with this, the script expects the following parameters:
 
 * -t: The **file name** of the Bash script that contains the commands to be run inside of the container.
   These commands might be compiling a test, running the test, writing output to a file, etc. **IMPORTANT:** This is only the name of script file **not** a path to the file. Make sure your script file is **inside your source directory**.
@@ -191,6 +214,8 @@ Tests can be run inside build containers using the `make_test.py` script. You mu
   but if you created your own custom image you'll want to use whatever you titled the directory that holds your Dockerfile as this parameter 
 
 ### Running `make_test.py`
+
+Again, please note, you must be within the same directory as the `make_test.py` script when you run these scripts as they use relative pathing and may throw errors otherwise.
 
 ```
 python3 make_test.py -t commands.sh -s ../test_sources/ -o ../test_output/ -d rhel7

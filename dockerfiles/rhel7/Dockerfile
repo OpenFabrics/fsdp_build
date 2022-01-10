@@ -1,5 +1,6 @@
 FROM registry.access.redhat.com/ubi7/ubi:latest
 RUN yum -y update && \ 
+    yum -y install wget && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     yum-config-manager --enable rhel-7-server-extras-rpms && \
     yum-config-manager --enable rhel-7-server-devtools-rpms && \
