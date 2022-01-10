@@ -215,7 +215,6 @@ Tests can be run inside build containers using the `make_test.py` script.
 
 ### Running `make_test.py`
 
-Again, please note, you must be within the same directory as the `make_test.py` script when you run these scripts as they use relative pathing and may throw errors otherwise.
 
 ```
 python3 make_test.py -t commands.sh -s ../test_sources/ -o ../test_output/ -d rhel7
