@@ -49,12 +49,10 @@ build ()
 #For each folder with a dockerfile
 
 for FILE in dockerfiles/*/; do
-    DOCKERFILE="$FILE/Dockerfile"
-    DISTRO_NAME=${FILE:12}
-    DISTRO_NAME=${DISTRO_NAME%?}
-    
-    build $DISTRO_NAME $DOCKERFILE   
-    #echo $DISTRO_NAME
-
-    
+    DOCKERFILE="${FILE}Dockerfile"
+    DISTRO_NAME=$(echo ${FILE} | cut -d/ -f2)
+            
+    # Build the container
+    echo "Building container for ${DISTRO_NAME} based on ${DOCKERFILE} ..."
+    build $DISTRO_NAME $DOCKERFILE
 done
