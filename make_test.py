@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+
 
 # This is a more "generalized" version of make_kernel.py that allows
 # users to compile/run tests within a container image of their choice.
