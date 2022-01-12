@@ -129,7 +129,7 @@ Once you've written your Dockerfile you'll want to save it in a similar file str
 
 For provided images you actually shouldn't need to change much, all of the Dockerfiles should be configured before hand and you can see the lists of packages each one installs within their Dockerfile.
 
-**Note**, both the RHEL 7 and RHEL 8 Dockerfiles are designed to be built on a RHEL based system and will fail if they are built on anything else. This is because RHEL containers are designed to only provide subsets of the main yum repositories found on RHEL machines if you don't have a valid RHEL subscription. This means some common packages including most development packages wont be available for download. If you are running these scripts on [builder-00.ofa.iol.unh.edu](https://github.com/OpenFabrics/fsdp_docs/blob/main/builders.md) then this will cause you no issue.
+**Note**, both the RHEL 7 and RHEL 8 Dockerfiles are designed to be built on a RHEL based system and will fail if they are built on anything else. This is because RHEL containers are designed to only provide subsets of the main yum repositories found on RHEL machines if you don't have a valid RHEL subscription. This means many common packages, including most development packages, wont be available for download. If you are running these scripts on [builder-00.ofa.iol.unh.edu](https://github.com/OpenFabrics/fsdp_docs/blob/main/builders.md) then this will cause you no issue.
 
 ## 3. Building Container Images
 
