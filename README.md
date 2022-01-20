@@ -76,17 +76,17 @@ sudo yum -y install podman
 
 ### RHEL8
 
-`
+```
 sudo yum module enable -y container-tools:rhel8
 sudo yum module install -y container-tools:rhel8
-`
+```
 
 ### Ubuntu 
 
-`
+```
 sudo apt-get -y update
 sudo apt-get -y install podman
-`
+```
 
 ## 2. Creating Container images
 
